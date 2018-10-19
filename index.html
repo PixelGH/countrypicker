@@ -63,7 +63,7 @@
             const result = () => {
                 let str = '{\n\t"name": "",\n\t"items": [\n';
                 countries.forEach((c, i) => {
-                    str +=  `\t\t{\n\t\t\t${alts[c] ? `"names": ["${c}", ${alts[c]}]` : `"name": ${c}`},\n\t\t\t"content": ""\n\t\t}${i == countries.length - 1 ? '' :  ','}\n`
+                    str +=  `\t\t{\n\t\t\t${alts[c] ? `"names": ["${c}", ${alts[c]}]` : `"name": "${c}"`},\n\t\t\t"content": ""\n\t\t}${i == countries.length - 1 ? '' :  ','}\n`
                 })
                 str += '\t]\n}'
                 download('list.json', str)
