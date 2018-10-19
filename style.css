@@ -1,0 +1,71 @@
+body, html {
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+#mapid {
+    height: 100%;
+}
+
+.side-box {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 500px;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: -1px 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+ul {
+    padding-left: 0;
+    max-height: calc(100% - 50px);
+    overflow: auto;
+}
+
+li {
+    padding-left: 20px;
+    list-style: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 40px;
+    line-height: 40px;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+}
+
+li:hover {
+    border-bottom: 1px solid #CECECE;
+    border-top: 1px solid #CECECE;
+    line-height: 38px;
+}
+
+li:hover::after {
+    content: "Entfernen";
+    color: #CACACA;
+    font-size: 10px;
+    text-transform: uppercase;
+    position: absolute;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+}
+
+#button {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50px;
+    background-color: #42f495;
+    line-height: 50px;
+    font-size: 12px;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+}

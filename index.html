@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+        integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+        crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+        integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+        crossorigin=""></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div id="mapid"></div>
+        <div class="side-box">
+            <ul id="country-list"></ul>
+            <div id="button" onclick="result()">Download</div>
+        </div>
+        <script>
+            var map = L.map('mapid').setView([0, 0], 3);
+
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox.streets',
+                accessToken: 'pk.eyJ1IjoicGl4ZWxtYiIsImEiOiJjam5nMjEyaXAxbDY0M3Bucm9pZzc5bjNxIn0.V5PzKh60sas-l9wTX6yw6Q'
+            }).addTo(map);
+
+            var countries = []
+
+            map.on('click', (e) => {
+                let lat = e.latlng.lat, lng = e.latlng.lng;
+
+                $.ajax(`https://eu1.locationiq.com/v1/reverse.php?key=pk.6918ebef084681b49b79e09ef93fae8d&lat=${lat}&lon=${lng}&format=json`, {
+                    success: (data) => {
+                        let country = data.address.country
+                        countries.push(country)
+                        countries = [...new Set(countries)]
+                        let str = ''
+                        for (var elem of countries) {
+                            str += `<li id="${elem}" onclick="remove(this.id)">${elem}</li>`
+                        }
+                        $('#country-list').html(str)
+                    }
+                })
+            })
+
+            const remove = (id) => {
+                countries.splice(countries.indexOf(id), 1)
+                let str = ''
+                for (var elem of countries) {
+                    str += `<li id="${elem}" onclick="remove(this.id)">${elem}</li>`
+                }
+                $('#country-list').html(str)
+            }
+
+            const result = () => {
+                let str = '{\n\t"name": "",\n\t"items": [\n';
+                countries.forEach((c, i) => {
+                    str +=  `\t\t{\n\t\t\t"name": "${c}",\n\t\t\t"content": ""\n\t\t}${i == countries.length - 1 ? '' :  ','}\n`
+                })
+                str += '\t]\n}'
+                download('list.json', str)
+            }
+
+            function download(filename, text) {
+                var pom = document.createElement('a');
+                pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                pom.setAttribute('download', filename);
+
+                if (document.createEvent) {
+                    var event = document.createEvent('MouseEvents');
+                    event.initEvent('click', true, true);
+                    pom.dispatchEvent(event);
+                }
+                else {
+                    pom.click();
+                }
+            }
+        </script>
+    </body>
+</html>
